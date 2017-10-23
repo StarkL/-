@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta http-equiv="X-UA-Compatible" content="ie=edge" />
+		<title>网页量尺</title>
+		<link rel="stylesheet" type="text/css" href="css/ruller.css" />
+	</head>
+
+	<body>
+
+		<div id="ruller" draggable="true">
+			<div class="kedu-wrapper"></div>
+		</div>
+		
+		<div class="tools-wrapper">
+			<button class="set-align">水平</button>
+			<button class="set-vertical">垂直</button>
+			<input type="number" class="set-rotate" />
+		</div>
+
+		<script>
+//			(function() {
+				var ruller = $('#ruller')[0],
+					keduWrapper = $('#ruller .kedu-wrapper')[0]
+					setAlign = $('.set-align')[0],
+					setVertical = $('.set-vertical')[0],
+					setRotate = $('.set-rotate')[0];
+				var length = keduWrapper.offsetWidth;
+				var str = '';
+				for(var i = 0, len = length/2; i < len; i++) {
+					if(!((i+1)%5 === 0)) {
+						str += '<span class="kedu"></span>';
+					} else { //如果是第5个刻度
+						if(!((i+1)%10 === 0)) {
+							str += '<span class="kedu five"></span>';
+						} else { //如果是第10个刻度
+							if(!((i+1)%50 === 0)) { 
+								str += '<span class="kedu ten"></span>';
+							} else { //如果是第50个刻度， 创建数字
+								str += '<span class="kedu ten"><span class="num">'+parseInt( (i+1)/50 )*50+'</span></span>';
+								
+							}
+						}
+					}
+				}
+				keduWrapper.innerHTML = str;
+				ruller.addEventListener('dragend', function(e) {
+					console.log(e)
+					var left = e.clientX,
+						top = e.clientY - ruller.offsetHeight;
+					ruller.style.left = left+'px';
+					ruller.style.top = top+'px';
+				})
+				
+				//点击水平
+				setAlign.addEventListener('click', function() {
+					ruller.style.transform = 'rotate(0deg)';
+				}, false);
+				//点击垂直
+				setVertical.addEventListener('click', function() {
+					ruller.style.transform = 'rotate(90deg)';
+				}, false);
+				//输入角度
+				setRotate.addEventListener('input', function() {
+					var value = this.value;
+					ruller.style.transform = 'rotate('+value+'deg)';
+				})
+				
+				function $(name) {
+					return document.querySelectorAll(name);
+				}
+//			})();
+		</script>
+	</body>
+
+</html>

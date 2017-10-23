@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta http-equiv="X-UA-Compatible" content="ie=edge" />
+		<title>网页量尺</title>
+		<link rel="stylesheet" type="text/css" href="css/ruller-v2.css" />
+	</head>
+
+	<body>
+
+		<div id="ruller" draggable="true">
+			<div class="kedu-wrapper"></div>
+			<div class="kedu-wrapper-vertial"></div>
+		</div>
+		
+		<div class="tools-wrapper">
+			<label for="">宽度</label>
+			<input type="number" class="set-width" />
+			<label for="">高度</label>
+			<input type="number" class="set-height" />
+		</div>
+
+		<script>
+//			(function() {
+				var ruller = $('#ruller')[0],
+					keduWrapper = $('#ruller .kedu-wrapper')[0]
+					keduWrapperV = $('#ruller .kedu-wrapper-vertial')[0],
+					setWidth = $('.set-width')[0],
+					setHeight = $('.set-height')[0];
+					
+				function setKeduAlign() {
+					var length = keduWrapper.offsetWidth,
+						str = '';
+					for(var i = 0, len = length/2; i < len; i++) {
+						if(!((i+1)%5 === 0)) {
+							str += '<span class="kedu"></span>';
+						} else { //如果是第5个刻度
+							if(!((i+1)%10 === 0)) {
+								str += '<span class="kedu five"></span>';
+							} else { //如果是第10个刻度
+								if(!((i+1)%50 === 0)) { 
+									str += '<span class="kedu ten"></span>';
+								} else { //如果是第50个刻度， 创建数字
+									str += '<span class="kedu ten"><span class="num">'+parseInt( (i+1)/50 )*100+'</span></span>';
+									
+								}
+							}
+						}
+					}
+					keduWrapper.innerHTML = str;
+				}
+				setKeduAlign();
+				
+				function setkeduVertical() {
+					var strV = lengthV = keduWrapperV.offsetHeight,
+						strV = '';
+					for(var i = 0, len = lengthV/2; i < len; i++) {
+						if(!((i+1)%5 === 0)) {
+							strV += '<span class="kedu-v"></span>';
+						} else { //如果是第5个刻度
+							if(!((i+1)%10 === 0)) {
+								strV += '<span class="kedu-v five"></span>';
+							} else { //如果是第10个刻度
+								if(!((i+1)%50 === 0)) { 
+									strV += '<span class="kedu-v ten"></span>';
+								} else { //如果是第50个刻度， 创建数字
+									strV += '<span class="kedu-v ten"><span class="num">'+parseInt( (i+1)/50 )*100+'</span></span>';
+									
+								}
+							}
+						}
+					}
+					keduWrapperV.innerHTML = strV;
+				}
+				setkeduVertical();
+				
+				
+				
+				ruller.addEventListener('dragend', function(e) {
+					console.log(e)
+					var left = e.clientX,
+						top = e.clientY - ruller.offsetHeight;
+					ruller.style.left = left+'px';
+					ruller.style.top = top+'px';
+				})
+				
+				setWidth.addEventListener('input', function() {
+					var value = this.value;
+					keduWrapper.style.width = value +　'px';
+					setKeduAlign();
+				})
+				setHeight.addEventListener('input', function() {
+					var value = this.value;
+					keduWrapperV.style.height = value +　'px';
+					setkeduVertical();
+				})
+				
+				function $(name) {
+					return document.querySelectorAll(name);
+				}
+//			})();
+		</script>
+	</body>
+
+</html>

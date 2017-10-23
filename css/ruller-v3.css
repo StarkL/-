@@ -1,0 +1,54 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+
+.cle:after {
+  content: '';
+  display: block;
+  width: 0;
+  height: 0;
+  clear: both;
+}
+
+.celiang-wrapper {
+  float: right;
+}
+
+.bg-celiang {
+  position: absolute;
+  z-index: 9998;
+  background-color: blue;
+  opacity: 0.05;
+}
+
+.click-position, .zhijiao {
+  position: absolute;
+  padding: 2px;
+  border-radius: 50%;
+  background-color: lightcoral;
+}
+
+.zhijiao {
+  background-color: lightpink;
+}
+
+.xiebian {
+  position: absolute;
+  transform-origin: 0 0;
+  transform: translate(-100%, -100%);
+  height: 1px;
+  background-color: lightsalmon;
+}
+
+.btn-open, .btn-close {
+  position: relative;
+  z-index: 9999;
+  padding: 2px 5px;
+  border: none;
+  border-radius: 3px;
+  background-color: lightcoral;
+  color: #fff;
+}
+
+/*# sourceMappingURL=ruller-v3.css.map */

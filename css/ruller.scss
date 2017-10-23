@@ -1,0 +1,45 @@
+#ruller {
+    position: absolute;
+    z-index: 9999;
+    overflow: hidden;
+    width: 500px;
+    height:40px;
+    .kedu-wrapper {
+        background-color: orange;
+        height: 100%;
+    }
+    .kedu {
+        position: relative;
+        float:left;
+        margin-left: 1px;
+        width: 1px;
+        height: 20%;
+        background-color: black;
+        &.five {
+            height: 24%;
+        }
+        &.ten {
+            height: 35%;
+        }
+    }
+    .num {
+        position: absolute;
+        top: 100%;
+        left: -6px;
+        font-size: 12px;
+    }
+    
+    .rotate-control {
+        width: 10px;
+        height: 10px;
+        position: absolute;
+        left: -50px;
+        top: 20px;
+        background-color: #007AFF;
+        border-radius: 50%;
+    }
+}
+
+.tools-wrapper {
+    float: right;
+}

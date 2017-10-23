@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<meta http-equiv="X-UA-Compatible" content="ie=edge" />
+	<title>网页量尺3</title>
+	<link rel="stylesheet" type="text/css" href="css/ruller-v3.css"/>
+</head>
+<body class="cle">
+	<div class="celiang-wrapper">
+		<button class="btn-open">开启测量</button>
+		<button class="btn-close">关闭测量</button>
+	</div>
+	<script>
+		/*总体思路：
+		 * 1.点击开始测量按钮，在整个页面上新创建一个最高的遮罩层，和测量线段容器层。
+		 * 	 然后对遮罩层注册点击事件，
+		 * 3.每当奇数次点击遮罩层的时候，会创建第一个圆点
+		 * 4.每当偶数次点击遮罩层的时候，会创建第二个圆点，
+		 * 	 然后创建两点之间的线段，线段的长度和旋转角度根据三角函数计算
+		 * 5.当点击关闭测量按钮时，删除遮罩层、线段容器层
+		 */
+		var open = $('.btn-open')[0],
+			close = $('.btn-close')[0],
+			body = $('body')[0],
+			inpLength = $('.length')[0],
+			bgExist = false,
+			clickCount = 0;
+		
+		function openClick() { //点击【开始测量】按钮
+			if(!bgExist) {
+				var bg = document.createElement('div'),
+					clickWrapper = document.createElement('div');
+				bg.className = 'bg-celiang';
+				clickWrapper.className = 'click-wrapper';
+				if(body.offsetHeight < window.innerHeight) {
+					bg.style.width = window.innerWidth+'px';
+					bg.style.height = window.innerHeight+'px';
+				} else {
+					bg.style.width = body.offsetWidth+'px';
+					bg.style.height = body.offsetHeight+'px';
+				}
+				body.appendChild(bg);
+				body.appendChild(clickWrapper);
+				bgExist = true;
+				
+				bg.addEventListener('click', bgClick, false)
+			}
+		}
+		function bgClick(e) { //测量模式下【点击页面】
+			var left = e.clientX,
+				top = e.clientY,
+				clickWrapper = $('.click-wrapper')[0];
+				
+			var clickPosition = document.createElement('div');
+			
+			clickPosition.className = 'click-position';
+			clickPosition.style.left = left+'px';
+			clickPosition.style.top = top+'px';
+			clickWrapper.appendChild(clickPosition);
+			
+			if(++clickCount%2 === 0) { //如果是偶数次点击
+				var clickPositions = $('.click-position'),
+					prevPosition = clickPositions[clickPositions.length-2],
+					prevPositionLeft = prevPosition.offsetLeft,
+					prevPositionTop = prevPosition.offsetTop;
+				var x1 = prevPositionLeft,
+					y1 = prevPositionTop,
+					x2 = left,
+					y2 = top;
+				var zhijiao = '', //直角点
+					zhijiaoDisplay = false, //是否显示直角点
+					xiebian = '', //斜边线段
+					inner = '', //直角点和斜边线段组合字符串
+					length = 0, //斜边长度
+					rotate = 0, //斜边角度
+					differA = 0, //点击两点水平距离
+					differV = 0, //点击两点垂直距离
+					situation = 0; //标识符，用于区别是第几种情况
+				
+				if(x2>=x1 && y2>=y1) { //情况1
+					zhijiao = '<div class="zhijiao" style="left: '+(x1-x2)+'px; top: '+0+'px"></div>';
+					differA = x2-x1;
+					differV = y2-y1;
+					rotate = Math.atan(differV/differA)*180/Math.PI;
+					length = Math.sqrt(Math.pow(differA,2)+ Math.pow(differV,2));
+					length = length.toFixed(0);
+					xiebian = '<div style="width:'+length+'px; transform:rotate('+rotate+'deg) translate(-100%, -100%)" class="xiebian">'+length+'px</div>';
+					console.log(1)
+				} else if(x2<=x1 && y2>=y1) { //情况3
+					zhijiao = '<div class="zhijiao" style="left: '+(x1-x2)+'px; top: '+0+'px"></div>';
+					differA = x1-x2;
+					differV = y2-y1;
+					rotate = Math.atan(differV/differA)*180/Math.PI;
+					length = Math.sqrt(Math.pow(differA,2)+ Math.pow(differV,2));
+					rotate = 90+(90-rotate);
+					length = length.toFixed(0);
+					xiebian = '<div style="width:'+length+'px; transform:rotate('+rotate+'deg) translate(-100%, -100%)" class="xiebian">'+length+'px</div>';
+					console.log(3)
+				} else if(x2>=x1 && y2<=y1) { //情况2
+					zhijiao = '<div class="zhijiao" style="left: '+0+'px; top: '+(y1-y2)+'px"></div>';
+					differA = x2-x1;
+					differV = y1-y2;
+					rotate = Math.atan(differA/differV)*180/Math.PI;
+					length = Math.sqrt(Math.pow(differA,2)+ Math.pow(differV,2));
+					rotate = 90+rotate;
+					length = length.toFixed(0);
+					xiebian = '<div style="width:'+length+'px; transform:rotate('+rotate+'deg)" class="xiebian">'+length+'px</div>';
+					console.log(2)
+				} else if(x2<=x1 && y2<=y1) { //情况4
+					zhijiao = '<div class="zhijiao" style="left: '+0+'px; top: '+(y1-y2)+'px"></div>';
+					differA = x1-x2;
+					differV = y1-y2;
+					rotate = Math.atan(differA/differV)*180/Math.PI;
+					length = Math.sqrt(Math.pow(differA,2)+ Math.pow(differV,2));
+					rotate = 90-rotate;
+					length = length.toFixed(0);
+					xiebian = '<div style="width:'+length+'px; transform:rotate('+rotate+'deg)" class="xiebian">'+length+'px</div>';
+					console.log(4)
+				}
+				
+//				length = Math.sqrt(Math.pow(differA,2)+ Math.pow(differV,2));
+//				rotate = Math.atan(differV/differA)*180/Math.PI;
+//				xiebian = '<div style="width:'+length+'px; transform:rotate('+rotate+'deg) translate(-100%, -100%)" class="xiebian"></div>';
+				
+				if(!zhijiaoDisplay) {
+					inner = xiebian;
+				} else {
+					inner = zhijiao + xiebian;
+				}
+//				length = Math.sqrt(Math.pow(differA,2)+ Math.pow(differV,2));
+//				rotate = Math.atan(differV/differA)*180/Math.PI;
+//				xiebian = '<div width="lengthpx" class="xiebian"></div>';
+				clickPosition.innerHTML = inner;
+				
+			}
+			
+		}
+		function closeClick() { //点击【关闭测量】按钮
+			if(bgExist) {
+				var bg = $('.bg-celiang')[0],
+					clickWrapper = $('.click-wrapper')[0];
+				bg.removeEventListener('click', bgClick, false);
+				body.removeChild(bg);
+				body.removeChild(clickWrapper)
+				bgExist = false;
+			}
+		}
+		
+		
+		open.addEventListener('click', openClick, false)
+		close.addEventListener('click', closeClick, false)
+		
+		
+		function $(name) {
+			return document.querySelectorAll(name);
+		}
+	</script>
+	
+</body>
+</html>
